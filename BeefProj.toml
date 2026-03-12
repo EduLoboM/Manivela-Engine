@@ -1,0 +1,13 @@
+FileVersion = 1
+
+[Project]
+Name = "Manivela-Engine"
+StartupObject = "Manivela_Engine.Program"
+
+[Configs.Debug.Linux64]
+LibPaths = ["/lib64/libSDL3.so", "/lib64/libSDL3_image.so"]
+Links = ["SDL3", "SDL3_image"]
+
+[Dependencies]
+SDL3-Beef = "*"
+SDL3_image-Beef = "*"

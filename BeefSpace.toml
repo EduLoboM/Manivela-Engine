@@ -1,0 +1,5 @@
+FileVersion = 1
+Projects = {Manivela-Engine = {Path = "."} , SDL3-Beef = {Path = "/home/eduradolm/Documents/SDL3-Beef/"}, SDL3_image-Beef = {Path = "/home/eduradolm/Documents/SDL3_image-Beef/"}}
+
+[Workspace]
+StartupProject = "Manivela-Engine"
