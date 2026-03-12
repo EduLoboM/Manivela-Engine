@@ -18,8 +18,12 @@ class Player
     public float knockbackY = 0f;
     public float friction = 5.0f;
     public float health = 100f;
+    public float maxHealth = 100f;
     public float invincibility = 0f;
     public bool hasFlash = false;
+
+    public Healthbar healthbar = new Healthbar() ~ delete _;
+    public Melee melee = new Melee() ~ delete _;
 
     DashState dashState = .Ready;
     float dashTimer = 0f;
@@ -40,6 +44,7 @@ class Player
         playerTexture = IMG_LoadTexture(engine.Renderer, "assets/Player.png");
         if (playerTexture == null)
             Console.WriteLine("Failed to load player texture!");
+        melee.Init(engine);
     }
 
     public void Update(Engine engine, float delta)
@@ -129,6 +134,8 @@ class Player
                 dashTimer = 0;
             }
         }
+
+        melee.Update(delta);
     }
 
     public void Draw(Engine engine)
@@ -138,7 +145,7 @@ class Player
         {
             if ((int)(invincibility * 10) % 2 == 0)
             {
-                SDL_SetTextureColorMod(playerTexture, 255, 0, 0);
+                SDL_SetTextureColorMod(playerTexture, 128, 128, 128);
             } else {
                 SDL_SetTextureColorMod(playerTexture, 255, 255, 255);
             }
@@ -148,6 +155,8 @@ class Player
         if (playerTexture != null)
             SDL_RenderTexture(engine.Renderer, playerTexture, null, &playerRect);
 
+        healthbar.Draw(engine, health, maxHealth, 25, 25, playerRect.w, 5, 50);
+
         SDL_SetRenderDrawColor(engine.Renderer, 255, 0, 0, 255);
 
         for (let p in projectiles)
@@ -155,6 +164,7 @@ class Player
             if (p.active)
             SDL_RenderFillRect(engine.Renderer, &p.projectileRect);
         }
+        melee.Draw(engine);
     }
 
     public void Shoot(Engine engine)
@@ -179,9 +189,26 @@ class Player
         projectiles.Add(p);
     }
 
+    public void Attack(Engine engine)
+    {
+        float mouseX = 0f;
+        float mouseY = 0f;
+        SDL_GetMouseState(&mouseX, &mouseY);
+        float dx = mouseX - (playerRect.x + playerRect.w / 2f);
+        float dy = mouseY - (playerRect.y + playerRect.h / 2f);
+        float length = Math.Sqrt(dx * dx + dy * dy);
+        if (length > 0)
+        {
+            dx /= length;
+            dy /= length;
+        }
+        melee.Attack(playerRect, dx, dy);
+    }
+
     public void Shutdown()
     {
         if (playerTexture != null)
             SDL_DestroyTexture(playerTexture);
+        melee.Shutdown();
     }
 }

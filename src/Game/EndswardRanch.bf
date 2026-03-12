@@ -41,6 +41,16 @@ class EndswardRanch : IGame
             }
         }
 
+        if (player.melee.meleeState == .Attacking && SDL_HasRectIntersectionFloat(&player.melee.meleeRect, &enemy.enemyRect) && !player.melee.hasHit)
+        {
+            enemy.health -= player.melee.damage;
+            player.melee.hasHit = true;
+            if (enemy.health <= 0)
+            {
+                shouldRespawnEnemy = true;
+            }
+        }
+
         if (shouldRespawnEnemy)
         {
             delete enemy;
@@ -64,7 +74,7 @@ class EndswardRanch : IGame
             {
                 player.hasFlash = true;
                 player.health -= enemy.damage;
-                player.invincibility = 3f;
+                player.invincibility = 1.5f;
             }
             
             if (player.health <= 0)
@@ -115,7 +125,12 @@ class EndswardRanch : IGame
     public void OnEvent(Engine engine, SDL_Event ev)
     {
         if (ev.type == (.)SDL_EventType.SDL_EVENT_MOUSE_BUTTON_DOWN)
-            player.Shoot(engine);
+        {
+            if (ev.button.button == (.)SDL_MouseButtonFlags.SDL_BUTTON_LEFT)
+                player.Shoot(engine);
+            if (ev.button.button == (.)SDL_MouseButtonFlags.SDL_BUTTON_RIGHT)
+                player.Attack(engine);
+        }
     }
 
     public void Draw(Engine engine)

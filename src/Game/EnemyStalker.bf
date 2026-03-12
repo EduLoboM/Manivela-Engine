@@ -10,13 +10,16 @@ class EnemyStalker
     public SDL_FRect enemyRect = .() { x = 1780, y = 1000, w = 150, h = 203 };
     public float speed = 100f;
     public float mass = 1f;
-    public float health = 100;
+    public float health = 100f;
+    public float maxHealth = 100f;
     public float damage = 25f;
-    public float dirX = 0;
-    public float dirY = 0;
+    public float dirX = 0f;
+    public float dirY = 0f;
     public float knockbackX = 0f;
     public float knockbackY = 0f;
     public float friction = 5.0f;
+
+    Healthbar healthbar = new Healthbar();
 
     public void Init(Engine engine)
     {
@@ -54,6 +57,8 @@ class EnemyStalker
     {
         if (enemyTexture != null)
             SDL_RenderTexture(engine.Renderer, enemyTexture, null, &enemyRect);
+
+        healthbar.Draw(engine, health, maxHealth, enemyRect.x, enemyRect.y - 20, enemyRect.w, 5, 100);
     }
 
     public void Shutdown()
