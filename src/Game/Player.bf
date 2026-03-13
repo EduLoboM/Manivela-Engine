@@ -22,6 +22,14 @@ class Player
     public float invincibility = 0f;
     public bool hasFlash = false;
 
+    public float maxMana = 100f;
+    public float mana = 100f;
+    public float manaRegen = 10f;
+    public float maxStrength = 100f;
+    public float strength = 100f;
+    public float strengthRegen = 5f;
+
+
     public Healthbar healthbar = new Healthbar() ~ delete _;
     public Melee melee = new Melee() ~ delete _;
 
@@ -140,7 +148,6 @@ class Player
 
     public void Draw(Engine engine)
     {
-
         if (invincibility > 0 && hasFlash)
         {
             if ((int)(invincibility * 10) % 2 == 0)
@@ -156,8 +163,19 @@ class Player
             SDL_RenderTexture(engine.Renderer, playerTexture, null, &playerRect);
 
         healthbar.Draw(engine, health, maxHealth, 25, 25, playerRect.w, 5, 50);
-
-        SDL_SetRenderDrawColor(engine.Renderer, 255, 0, 0, 255);
+        SDL_FRect manaBackground = .() { x = 25, y = 35, w = (maxMana/50) * playerRect.w, h = 5 };
+        SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, 255);
+        SDL_RenderFillRect(engine.Renderer, &manaBackground);
+        SDL_FRect manaBar = .() { x = 25, y = 35, w = (mana/50) * playerRect.w, h = 5 };
+        SDL_SetRenderDrawColor(engine.Renderer, 12, 0, 255, 255);
+        SDL_RenderFillRect(engine.Renderer, &manaBar);
+        SDL_FRect strengthBackground = .() { x = 25, y = 45, w = (maxStrength/50) * playerRect.w, h = 5 };
+        SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, 255);
+        SDL_RenderFillRect(engine.Renderer, &strengthBackground);
+        SDL_FRect strengthBar = .() { x = 25, y = 45, w = (strength/50) * playerRect.w, h = 5 };
+        SDL_SetRenderDrawColor(engine.Renderer, 255, 233, 0, 255);
+        SDL_RenderFillRect(engine.Renderer, &strengthBar);
+        SDL_SetRenderDrawColor(engine.Renderer, 198, 57, 125, 255);
 
         for (let p in projectiles)
         {
@@ -169,6 +187,10 @@ class Player
 
     public void Shoot(Engine engine)
     {
+        Projectile temp = scope Projectile();
+        if (mana < temp.manaCost)
+            return;
+
         float mouseX = 0f;
         float mouseY = 0f;
         SDL_GetMouseState(&mouseX, &mouseY);
@@ -181,6 +203,7 @@ class Player
             dy /= length;
         }
         Projectile p = new Projectile();
+        mana -= p.manaCost;
         p.dirX = dx;
         p.dirY = dy;
         p.projectileRect.x = playerRect.x + playerRect.w / 2f;
@@ -191,6 +214,9 @@ class Player
 
     public void Attack(Engine engine)
     {
+        if (strength < melee.strengthCost)
+            return;
+
         float mouseX = 0f;
         float mouseY = 0f;
         SDL_GetMouseState(&mouseX, &mouseY);
@@ -201,6 +227,9 @@ class Player
         {
             dx /= length;
             dy /= length;
+        }
+        if (melee.meleeState == .Ready){
+            strength -= melee.strengthCost;
         }
         melee.Attack(playerRect, dx, dy);
     }

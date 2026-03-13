@@ -14,6 +14,7 @@ class Projectile
     public float dirX = 0f;
     public float dirY = 0f;
     public bool active = false;
+    public float manaCost = 15f;
 
     public void Update(float delta)
     {

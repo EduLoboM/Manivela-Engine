@@ -28,6 +28,9 @@ class EndswardRanch : IGame
         player.Update(engine, delta);
         enemy.Update(engine, delta, player.playerRect);
 
+        player.mana = Math.Min(player.mana + player.manaRegen * delta, player.maxMana);
+        player.strength = Math.Min(player.strength + player.strengthRegen * delta, player.maxStrength);
+
         for (let p in player.projectiles)
         {
             if (p.active && SDL_HasRectIntersectionFloat(&p.projectileRect, &enemy.enemyRect))

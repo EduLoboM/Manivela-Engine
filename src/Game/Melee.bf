@@ -10,6 +10,7 @@ class Melee
     public SDL_FRect meleeRect = .() { x = 400, y = 300, w = 250, h = 100};
     public float duration = 0.25f;
     public float damage = 34f;
+    public float strengthCost = 15f;
     public enum MeleeState {
         Ready,
         Attacking,
@@ -30,7 +31,7 @@ class Melee
             SDL_SetRenderDrawColor(engine.Renderer, 255, 255, 255, 255);
             SDL_RenderClear(engine.Renderer);
             SDL_SetRenderTarget(engine.Renderer, null);
-            SDL_SetTextureColorMod(meleeTexture, 255, 0, 0);
+            SDL_SetTextureColorMod(meleeTexture, 0, 164, 153);
         }
     }
 
