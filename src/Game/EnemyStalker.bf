@@ -20,7 +20,7 @@ class EnemyStalker
     public float knockbackY = 0f;
     public float friction = 5.0f;
 
-    Healthbar healthbar = new Healthbar();
+    HealthBar healthbar = new HealthBar();
 
     public void Init(Engine engine)
     {

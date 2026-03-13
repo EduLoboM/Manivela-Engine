@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using SDL3;
 using SDL3_image;
 namespace Manivela_Engine;
@@ -22,6 +23,7 @@ class Projectile
     public bool active = false;
     public float manaCost = 15f;
     public ProjectileType type;
+    public List<EnemyStalker> hitEnemies = new .() ~ delete _;
 
     public this(ProjectileType type)
     {
@@ -36,8 +38,8 @@ class Projectile
                 projectileRect.h = 20;
             case .Fast:
                 speed = 2000f;
-                damage = 4f;
-                manaCost = 5f;
+                damage = 5f;
+                manaCost = 10f;
                 projectileRect.w = 10;
                 projectileRect.h = 10;
             case .Heavy:

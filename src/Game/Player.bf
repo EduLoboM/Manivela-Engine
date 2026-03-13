@@ -29,8 +29,8 @@ class Player
     public float strength = 100f;
     public float strengthRegen = 5f;
 
-
-    public Healthbar healthbar = new Healthbar() ~ delete _;
+    public GameHud gameHud = new GameHud() ~ delete _;
+    public HealthBar healthbar = new HealthBar() ~ delete _;
     public Melee melee = new Melee() ~ delete _;
 
     DashState dashState = .Ready;
@@ -167,18 +167,7 @@ class Player
             SDL_RenderTexture(engine.Renderer, playerTexture, null, &playerRect);
 
         healthbar.Draw(engine, health, maxHealth, 25, 25, playerRect.w, 5, 50);
-        SDL_FRect manaBackground = .() { x = 25, y = 35, w = (maxMana/50) * playerRect.w, h = 5 };
-        SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, 255);
-        SDL_RenderFillRect(engine.Renderer, &manaBackground);
-        SDL_FRect manaBar = .() { x = 25, y = 35, w = (mana/50) * playerRect.w, h = 5 };
-        SDL_SetRenderDrawColor(engine.Renderer, 12, 0, 255, 255);
-        SDL_RenderFillRect(engine.Renderer, &manaBar);
-        SDL_FRect strengthBackground = .() { x = 25, y = 45, w = (maxStrength/50) * playerRect.w, h = 5 };
-        SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, 255);
-        SDL_RenderFillRect(engine.Renderer, &strengthBackground);
-        SDL_FRect strengthBar = .() { x = 25, y = 45, w = (strength/50) * playerRect.w, h = 5 };
-        SDL_SetRenderDrawColor(engine.Renderer, 255, 233, 0, 255);
-        SDL_RenderFillRect(engine.Renderer, &strengthBar);
+        gameHud.Draw(engine, mana, maxMana, 25, 35, playerRect.w, 5, 50, strength, maxStrength);
         SDL_SetRenderDrawColor(engine.Renderer, 198, 57, 125, 255);
 
         for (let p in projectiles)
@@ -256,7 +245,6 @@ class Player
         if (currentProjectile == .Normal) currentProjectile = .Fast;
         else if (currentProjectile == .Fast) currentProjectile = .Heavy;
         else currentProjectile = .Normal;
-        Console.WriteLine(scope $"Projetil alterado para: {currentProjectile}");
     }
 
     public void CycleMelee()
@@ -264,7 +252,6 @@ class Player
         if (currentMelee == .Sword) currentMelee = .Dagger;
         else if (currentMelee == .Dagger) currentMelee = .Mace;
         else currentMelee = .Sword;
-        Console.WriteLine(scope $"Corpo a corpo alterado para: {currentMelee}");
         melee.Equip(currentMelee);
     }
 }

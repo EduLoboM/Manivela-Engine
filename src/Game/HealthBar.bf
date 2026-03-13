@@ -3,13 +3,12 @@ using SDL3;
 using SDL3_image;
 namespace Manivela_Engine;
 
-class Healthbar
+class HealthBar
 {
 
     public void Update(float delta)
     {
 
-        
     }
 
     public void Draw(Engine engine, float health, float maxHealth, float x, float y, float w, float h, float scale)
