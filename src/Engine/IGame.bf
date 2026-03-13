@@ -8,7 +8,7 @@ interface IGame
     public float WorldHeight { get; set; }
     void Init(Engine engine);
     void Update(Engine engine, float delta);
-    void Draw(Engine engine);
+    void Draw(Engine engine, float alpha);
     void Shutdown();
     void OnEvent(Engine engine, SDL_Event ev);
 }

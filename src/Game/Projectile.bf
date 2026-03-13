@@ -18,6 +18,8 @@ class Projectile
     public float speed = 1000f;
     public float damage = 10f;
     public float mass = 1f;
+    public float prevX = 0f;
+    public float prevY = 0f;
     public float dirX = 0f;
     public float dirY = 0f;
     public bool active = false;
@@ -66,6 +68,8 @@ class Projectile
 
     public void Update(float delta, float WorldWidth, float WorldHeight)
     {
+        prevX = projectileRect.x;
+        prevY = projectileRect.y;
         projectileRect.x += dirX * speed * delta;
         projectileRect.y += dirY * speed * delta;
 
@@ -73,5 +77,14 @@ class Projectile
             active = false;
         }
         
+    }
+    public void Draw(Engine engine, float alpha)
+    {
+        float drawX = prevX + (projectileRect.x - prevX) * alpha;
+        float drawY = prevY + (projectileRect.y - prevY) * alpha;
+        SDL_FRect drawRect = projectileRect;
+        drawRect.x = drawX;
+        drawRect.y = drawY;
+        SDL_RenderFillRect(engine.Renderer, &drawRect);
     }
 }

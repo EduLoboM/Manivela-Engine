@@ -106,7 +106,7 @@ class Melee
         }
     }
 
-    public void Draw(Engine engine)
+    public void Draw(Engine engine, float alpha)
     {
         if (meleeState == .Attacking && meleeTexture != null)
         {

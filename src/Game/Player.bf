@@ -14,6 +14,8 @@ class Player
     public float mass = 1f;
     public float velocityX = 0f;
     public float velocityY = 0f;
+    public float prevX = 0f;
+    public float prevY = 0f;
     public float knockbackX = 0f;
     public float knockbackY = 0f;
     public float friction = 5.0f;
@@ -52,6 +54,8 @@ class Player
 
     public void Init(Engine engine)
     {
+        prevX = playerRect.x;
+        prevY = playerRect.y;
         playerTexture = IMG_LoadTexture(engine.Renderer, "assets/Player.png");
         if (playerTexture == null)
             Console.WriteLine("Failed to load player texture!");
@@ -61,6 +65,8 @@ class Player
 
     public void Update(Engine engine, float delta, float WorldWidth, float WorldHeight)
     {
+        prevX = playerRect.x;
+        prevY = playerRect.y;
         velocityX = 0f;
         velocityY = 0f;
 
@@ -150,8 +156,14 @@ class Player
         melee.Update(delta);
     }
 
-    public void Draw(Engine engine)
+    public void Draw(Engine engine, float alpha)
     {
+        float drawX = prevX + (playerRect.x - prevX) * alpha;
+        float drawY = prevY + (playerRect.y - prevY) * alpha;
+        SDL_FRect drawRect = playerRect;
+        drawRect.x = drawX;
+        drawRect.y = drawY;
+
         if (invincibility > 0 && hasFlash)
         {
             if ((int)(invincibility * 10) % 2 == 0)
@@ -164,7 +176,7 @@ class Player
             SDL_SetTextureColorMod(playerTexture, 255, 255, 255);
         }
         if (playerTexture != null)
-            SDL_RenderTexture(engine.Renderer, playerTexture, null, &playerRect);
+            SDL_RenderTexture(engine.Renderer, playerTexture, null, &drawRect);
 
         healthbar.Draw(engine, health, maxHealth, 25, 25, playerRect.w, 5, 50);
         gameHud.Draw(engine, mana, maxMana, 25, 35, playerRect.w, 5, 50, strength, maxStrength);
@@ -173,9 +185,9 @@ class Player
         for (let p in projectiles)
         {
             if (p.active)
-            SDL_RenderFillRect(engine.Renderer, &p.projectileRect);
+                p.Draw(engine, alpha);
         }
-        melee.Draw(engine);
+        melee.Draw(engine, alpha);
     }
 
     public void Shoot(Engine engine)
@@ -204,6 +216,8 @@ class Player
         
         p.projectileRect.x = playerRect.x + playerRect.w / 2f - p.projectileRect.w / 2f;
         p.projectileRect.y = playerRect.y + playerRect.h / 2f - p.projectileRect.h / 2f;
+        p.prevX = p.projectileRect.x;
+        p.prevY = p.projectileRect.y;
         
         p.active = true;
         projectiles.Add(p);

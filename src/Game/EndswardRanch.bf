@@ -269,10 +269,10 @@ class EndswardRanch : IGame
         }
     }
 
-    public void Draw(Engine engine)
+    public void Draw(Engine engine, float alpha)
     {
-        player.Draw(engine);
-        for (let e in enemies) e.Draw(engine);
+        player.Draw(engine, alpha);
+        for (let e in enemies) e.Draw(engine, alpha);
         player.gameHud.DrawRoundNumber(engine, round, WorldWidth);
     }
 

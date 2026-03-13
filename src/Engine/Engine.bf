@@ -98,10 +98,12 @@ public void Run(IGame game)
                 accumulator -= fixedDelta;
             }
 
+            float alpha = (float)(accumulator / fixedDelta);
+
             SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
             SDL_RenderClear(Renderer);
             
-            game.Draw(this);
+            game.Draw(this, alpha);
             
             SDL_RenderPresent(Renderer);
         }
