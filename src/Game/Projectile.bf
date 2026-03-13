@@ -3,6 +3,12 @@ using SDL3;
 using SDL3_image;
 namespace Manivela_Engine;
 
+public enum ProjectileType {
+    Normal,
+    Fast,
+    Heavy
+}
+
 class Projectile
 {
 
@@ -15,25 +21,55 @@ class Projectile
     public float dirY = 0f;
     public bool active = false;
     public float manaCost = 15f;
+    public ProjectileType type;
 
-    public void Update(float delta)
+    public this(ProjectileType type)
+    {
+        this.type = type;
+        switch (type)
+        {
+            case .Normal:
+                speed = 1000f;
+                damage = 10f;
+                manaCost = 15f;
+                projectileRect.w = 20;
+                projectileRect.h = 20;
+            case .Fast:
+                speed = 2000f;
+                damage = 4f;
+                manaCost = 5f;
+                projectileRect.w = 10;
+                projectileRect.h = 10;
+            case .Heavy:
+                speed = 500f;
+                damage = 35f;
+                manaCost = 30f;
+                projectileRect.w = 40;
+                projectileRect.h = 40;
+        }
+    }
+
+    public static float getManaCost(ProjectileType type)
+    {
+        switch (type)
+        {
+            case .Normal:
+                return 15f;
+            case .Fast:
+                return 5f;
+            case .Heavy:
+                return 30f;
+        }
+    }
+
+    public void Update(float delta, float WorldWidth, float WorldHeight)
     {
         projectileRect.x += dirX * speed * delta;
         projectileRect.y += dirY * speed * delta;
 
-        if (projectileRect.x < 0 || projectileRect.x > 1780 || projectileRect.y < 0 || projectileRect.y > 1000){
+        if (projectileRect.x < 0 || projectileRect.x > WorldWidth || projectileRect.y < 0 || projectileRect.y > WorldHeight){
             active = false;
         }
         
-    }
-
-    public void Draw(Engine engine)
-    {
-
-    }
-
-    public void Shutdown()
-    {
-
     }
 }

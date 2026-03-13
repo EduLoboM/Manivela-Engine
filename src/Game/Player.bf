@@ -47,15 +47,19 @@ class Player
         Cooldown
     }
 
+    public MeleeType currentMelee = .Sword;
+    public ProjectileType currentProjectile = .Normal;
+
     public void Init(Engine engine)
     {
         playerTexture = IMG_LoadTexture(engine.Renderer, "assets/Player.png");
         if (playerTexture == null)
             Console.WriteLine("Failed to load player texture!");
         melee.Init(engine);
+        melee.Equip(currentMelee);
     }
 
-    public void Update(Engine engine, float delta)
+    public void Update(Engine engine, float delta, float WorldWidth, float WorldHeight)
     {
         velocityX = 0f;
         velocityY = 0f;
@@ -76,7 +80,7 @@ class Player
         for (let p in projectiles)
         {
             if (p.active)
-                p.Update(delta);
+                p.Update(delta, WorldWidth, WorldHeight);
         }
         
         velocityX += knockbackX;
@@ -88,8 +92,8 @@ class Player
         playerRect.x += velocityX * delta;
         playerRect.y += velocityY * delta;
 
-        playerRect.x = Math.Clamp(playerRect.x, 0, 1780 - playerRect.w);
-        playerRect.y = Math.Clamp(playerRect.y, 0, 1000 - playerRect.h);
+        playerRect.x = Math.Clamp(playerRect.x, 0, WorldWidth - playerRect.w);
+        playerRect.y = Math.Clamp(playerRect.y, 0, WorldHeight - playerRect.h);
         
         if (dashState == .Ready && engine.KeyboardState[(int)SDL_Scancode.SDL_SCANCODE_LSHIFT])
         {
@@ -187,8 +191,8 @@ class Player
 
     public void Shoot(Engine engine)
     {
-        Projectile temp = scope Projectile();
-        if (mana < temp.manaCost)
+        float cost = Projectile.getManaCost(currentProjectile);
+        if (mana < cost)
             return;
 
         float mouseX = 0f;
@@ -197,17 +201,21 @@ class Player
         float dx = mouseX - (playerRect.x + playerRect.w / 2f);
         float dy = mouseY - (playerRect.y + playerRect.h / 2f);
         float length = Math.Sqrt(dx * dx + dy * dy);
+        
         if (length > 0)
         {
             dx /= length;
             dy /= length;
         }
-        Projectile p = new Projectile();
+        
+        Projectile p = new Projectile(currentProjectile);
         mana -= p.manaCost;
         p.dirX = dx;
         p.dirY = dy;
-        p.projectileRect.x = playerRect.x + playerRect.w / 2f;
-        p.projectileRect.y = playerRect.y + playerRect.h / 2f;
+        
+        p.projectileRect.x = playerRect.x + playerRect.w / 2f - p.projectileRect.w / 2f;
+        p.projectileRect.y = playerRect.y + playerRect.h / 2f - p.projectileRect.h / 2f;
+        
         p.active = true;
         projectiles.Add(p);
     }
@@ -228,9 +236,11 @@ class Player
             dx /= length;
             dy /= length;
         }
+        
         if (melee.meleeState == .Ready){
             strength -= melee.strengthCost;
         }
+        
         melee.Attack(playerRect, dx, dy);
     }
 
@@ -239,5 +249,22 @@ class Player
         if (playerTexture != null)
             SDL_DestroyTexture(playerTexture);
         melee.Shutdown();
+    }
+
+    public void CycleProjectile()
+    {
+        if (currentProjectile == .Normal) currentProjectile = .Fast;
+        else if (currentProjectile == .Fast) currentProjectile = .Heavy;
+        else currentProjectile = .Normal;
+        Console.WriteLine(scope $"Projetil alterado para: {currentProjectile}");
+    }
+
+    public void CycleMelee()
+    {
+        if (currentMelee == .Sword) currentMelee = .Dagger;
+        else if (currentMelee == .Dagger) currentMelee = .Mace;
+        else currentMelee = .Sword;
+        Console.WriteLine(scope $"Corpo a corpo alterado para: {currentMelee}");
+        melee.Equip(currentMelee);
     }
 }

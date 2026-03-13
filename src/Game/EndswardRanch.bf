@@ -6,6 +6,9 @@ namespace Manivela_Engine;
 
 class EndswardRanch : IGame
 {
+    public float WorldWidth { get; set; } = 1920f;
+    public float WorldHeight { get; set; } = 1080f;
+
     Player player = new Player() ~ delete _;
     EnemyStalker enemy = new EnemyStalker() ~ delete _;
     public float relativeVelocityX = 0f;
@@ -25,8 +28,8 @@ class EndswardRanch : IGame
 
     public void Update(Engine engine, float delta)
     {
-        player.Update(engine, delta);
-        enemy.Update(engine, delta, player.playerRect);
+        player.Update(engine, delta, WorldWidth, WorldHeight);
+        enemy.Update(engine, delta, player.playerRect, WorldWidth, WorldHeight);
 
         player.mana = Math.Min(player.mana + player.manaRegen * delta, player.maxMana);
         player.strength = Math.Min(player.strength + player.strengthRegen * delta, player.maxStrength);
@@ -35,8 +38,22 @@ class EndswardRanch : IGame
         {
             if (p.active && SDL_HasRectIntersectionFloat(&p.projectileRect, &enemy.enemyRect))
             {
-                p.active = false;
-                enemy.health -= p.damage;
+                if (p.type != .Fast)
+                {
+                    p.active = false;
+                }
+                
+                if (p.type == .Heavy)
+                {
+                    enemy.health -= p.damage;
+                    enemy.knockbackX += p.dirX * 3000f * delta;
+                    enemy.knockbackY += p.dirY * 3000f * delta;
+                }
+                else
+                {
+                    enemy.health -= p.damage;
+                }
+
                 if (enemy.health <= 0)
                 {
                     shouldRespawnEnemy = true;
@@ -48,6 +65,16 @@ class EndswardRanch : IGame
         {
             enemy.health -= player.melee.damage;
             player.melee.hasHit = true;
+            
+            if (player.currentMelee == .Dagger)
+            {
+                player.health = Math.Min(player.health + 5f, player.maxHealth);
+            }
+            else if (player.currentMelee == .Mace)
+            {
+                enemy.speed -= 50f;
+            }
+            
             if (enemy.health <= 0)
             {
                 shouldRespawnEnemy = true;
@@ -133,6 +160,15 @@ class EndswardRanch : IGame
                 player.Shoot(engine);
             if (ev.button.button == (.)SDL_MouseButtonFlags.SDL_BUTTON_RIGHT)
                 player.Attack(engine);
+        }
+        
+        if (ev.type == (.)SDL_EventType.SDL_EVENT_KEY_DOWN && ev.key.repeat == false)
+        {
+            if (ev.key.scancode == (.)SDL_Scancode.SDL_SCANCODE_Q)
+                player.CycleProjectile();
+            
+            if (ev.key.scancode == (.)SDL_Scancode.SDL_SCANCODE_E)
+                player.CycleMelee();
         }
     }
 

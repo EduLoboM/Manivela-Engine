@@ -3,6 +3,12 @@ using SDL3;
 using SDL3_image;
 namespace Manivela_Engine;
 
+public enum MeleeType {
+    Sword,
+    Dagger,
+    Mace
+}
+
 class Melee
 {
 
@@ -21,6 +27,34 @@ class Melee
     public float cooldown = 0.25f;
     double angle = 0;
     public bool hasHit = false;
+
+    public void Equip(MeleeType type)
+    {
+        switch (type)
+        {
+            case .Sword:
+                damage = 34f;
+                strengthCost = 15f;
+                duration = 0.25f;
+                cooldown = 0.25f;
+                meleeRect.w = 250;
+                meleeRect.h = 100;
+            case .Dagger:
+                damage = 15f;
+                strengthCost = 5f;
+                duration = 0.1f;
+                cooldown = 0.1f;
+                meleeRect.w = 150;
+                meleeRect.h = 50;
+            case .Mace:
+                damage = 80f;
+                strengthCost = 40f;
+                duration = 0.5f;
+                cooldown = 0.8f;
+                meleeRect.w = 300;
+                meleeRect.h = 150;
+        }
+    }
 
     public void Init(Engine engine)
     {

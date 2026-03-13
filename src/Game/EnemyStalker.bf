@@ -7,8 +7,9 @@ namespace Manivela_Engine;
 class EnemyStalker
 {
     SDL_Texture* enemyTexture;
-    public SDL_FRect enemyRect = .() { x = 1780, y = 1000, w = 150, h = 203 };
+    public SDL_FRect enemyRect = .() { x = 1920 - 150, y = 1080 - 203, w = 150, h = 203 };
     public float speed = 100f;
+    public float originalSpeed = 100f;
     public float mass = 1f;
     public float health = 100f;
     public float maxHealth = 100f;
@@ -29,7 +30,7 @@ class EnemyStalker
         }
     }
 
-    public void Update(Engine engine, float delta, SDL_FRect playerRect)
+    public void Update(Engine engine, float delta, SDL_FRect playerRect, float WorldWidth, float WorldHeight)
     {
         dirX = playerRect.x - enemyRect.x;
         dirY = playerRect.y - enemyRect.y;
@@ -40,9 +41,11 @@ class EnemyStalker
             dirY /= length;
         }
 
-        enemyRect.x = Math.Clamp(enemyRect.x, 0, 1780 - enemyRect.w);
-        enemyRect.y = Math.Clamp(enemyRect.y, 0, 1000 - enemyRect.h);
+        enemyRect.x = Math.Clamp(enemyRect.x, 0, WorldWidth - enemyRect.w);
+        enemyRect.y = Math.Clamp(enemyRect.y, 0, WorldHeight - enemyRect.h);
         
+        speed = Math.Lerp(speed, originalSpeed, 2.0f * delta);
+
         float velocityX = dirX * speed + knockbackX;
         float velocityY = dirY * speed + knockbackY;
         
