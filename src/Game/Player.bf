@@ -60,7 +60,7 @@ class Player
         if (playerTexture == null)
             Console.WriteLine("Failed to load player texture!");
         melee.Init(engine);
-        melee.Equip(currentMelee);
+        melee.Equip(currentMelee, engine);
     }
 
     public void Update(Engine engine, float delta, float WorldWidth, float WorldHeight)
@@ -180,7 +180,6 @@ class Player
 
         healthbar.Draw(engine, health, maxHealth, 25, 25, playerRect.w, 5, 50);
         gameHud.Draw(engine, mana, maxMana, 25, 35, playerRect.w, 5, 50, strength, maxStrength);
-        SDL_SetRenderDrawColor(engine.Renderer, 198, 57, 125, 255);
 
         for (let p in projectiles)
         {
@@ -209,7 +208,7 @@ class Player
             dy /= length;
         }
         
-        Projectile p = new Projectile(currentProjectile);
+        Projectile p = new Projectile(currentProjectile, engine);
         mana -= p.manaCost;
         p.dirX = dx;
         p.dirY = dy;
@@ -261,11 +260,11 @@ class Player
         else currentProjectile = .Normal;
     }
 
-    public void CycleMelee()
+    public void CycleMelee(Engine engine)
     {
         if (currentMelee == .Sword) currentMelee = .Dagger;
         else if (currentMelee == .Dagger) currentMelee = .Mace;
         else currentMelee = .Sword;
-        melee.Equip(currentMelee);
+        melee.Equip(currentMelee, engine);
     }
 }

@@ -265,7 +265,7 @@ class EndswardRanch : IGame
                 player.CycleProjectile();
             
             if (ev.key.scancode == (.)SDL_Scancode.SDL_SCANCODE_E)
-                player.CycleMelee();
+                player.CycleMelee(engine);
         }
     }
 

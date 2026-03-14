@@ -28,7 +28,7 @@ class HealthBar
         }
         else
         {
-            SDL_SetRenderDrawColor(engine.Renderer, 255, 0, 0, 255);
+            SDL_SetRenderDrawColor(engine.Renderer, 255, 30, 30, 255);
         }
         SDL_RenderFillRect(engine.Renderer, &healthBar);
     }

@@ -28,11 +28,14 @@ class Melee
     double angle = 0;
     public bool hasHit = false;
 
-    public void Equip(MeleeType type)
+    public void Equip(MeleeType type, Engine engine)
     {
+        if (meleeTexture != null)
+            SDL_DestroyTexture(meleeTexture);
         switch (type)
         {
             case .Sword:
+                meleeTexture = IMG_LoadTexture(engine.Renderer, "assets/sword.png");
                 damage = 34f;
                 strengthCost = 15f;
                 duration = 0.25f;
@@ -40,6 +43,7 @@ class Melee
                 meleeRect.w = 250;
                 meleeRect.h = 100;
             case .Dagger:
+                meleeTexture = IMG_LoadTexture(engine.Renderer, "assets/dagger.png");
                 damage = 15f;
                 strengthCost = 5f;
                 duration = 0.1f;
@@ -47,6 +51,7 @@ class Melee
                 meleeRect.w = 150;
                 meleeRect.h = 50;
             case .Mace:
+                meleeTexture = IMG_LoadTexture(engine.Renderer, "assets/hammer.png");
                 damage = 80f;
                 strengthCost = 40f;
                 duration = 0.5f;
@@ -58,15 +63,6 @@ class Melee
 
     public void Init(Engine engine)
     {
-        meleeTexture = SDL_CreateTexture(engine.Renderer, .SDL_PIXELFORMAT_RGBA8888, .SDL_TEXTUREACCESS_TARGET, 1, 1);
-        if (meleeTexture != null)
-        {
-            SDL_SetRenderTarget(engine.Renderer, meleeTexture);
-            SDL_SetRenderDrawColor(engine.Renderer, 255, 255, 255, 255);
-            SDL_RenderClear(engine.Renderer);
-            SDL_SetRenderTarget(engine.Renderer, null);
-            SDL_SetTextureColorMod(meleeTexture, 0, 164, 153);
-        }
     }
 
     public void Attack(SDL_FRect entityRect, float dirX, float dirY)

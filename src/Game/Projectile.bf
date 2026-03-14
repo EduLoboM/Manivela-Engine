@@ -27,24 +27,27 @@ class Projectile
     public ProjectileType type;
     public List<EnemyStalker> hitEnemies = new .() ~ delete _;
 
-    public this(ProjectileType type)
+    public this(ProjectileType type, Engine engine)
     {
         this.type = type;
         switch (type)
         {
             case .Normal:
+                projectileTexture = IMG_LoadTexture(engine.Renderer, "assets/normal.png");
                 speed = 1000f;
                 damage = 10f;
                 manaCost = 15f;
                 projectileRect.w = 20;
                 projectileRect.h = 20;
             case .Fast:
+                projectileTexture = IMG_LoadTexture(engine.Renderer, "assets/fast.png");
                 speed = 2000f;
                 damage = 5f;
                 manaCost = 10f;
                 projectileRect.w = 10;
                 projectileRect.h = 10;
             case .Heavy:
+                projectileTexture = IMG_LoadTexture(engine.Renderer, "assets/heavy.png");
                 speed = 500f;
                 damage = 35f;
                 manaCost = 30f;
@@ -85,6 +88,14 @@ class Projectile
         SDL_FRect drawRect = projectileRect;
         drawRect.x = drawX;
         drawRect.y = drawY;
-        SDL_RenderFillRect(engine.Renderer, &drawRect);
+
+        if (projectileTexture != null)
+            SDL_RenderTexture(engine.Renderer, projectileTexture, null, &drawRect);
+    }
+
+    public void Shutdown()
+    {
+        if (projectileTexture != null)
+            SDL_DestroyTexture(projectileTexture);
     }
 }

@@ -19,15 +19,38 @@ class GameHud
 
         SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, 255);
         SDL_RenderFillRect(engine.Renderer, &manaBackground);
-        SDL_SetRenderDrawColor(engine.Renderer, 12, 0, 255, 255);
+        if (mana > maxMana * 0.6f)
+        {
+            SDL_SetRenderDrawColor(engine.Renderer, 0, 255, 209, 255);
+        }
+        else if (mana > maxMana * 0.3f)
+        {
+            SDL_SetRenderDrawColor(engine.Renderer, 255, 255, 0, 255);
+        }
+        else
+        {
+            SDL_SetRenderDrawColor(engine.Renderer, 255, 30, 30, 255);
+        }
         SDL_RenderFillRect(engine.Renderer, &manaBar);
 
         SDL_FRect strengthBackground = .() { x = x, y = y + 5, w = (maxStrength/scale) * w, h = h };
         SDL_FRect strengthBar = .() { x = x, y = y + 5, w = (strength/scale) * w, h = h };
 
+
         SDL_SetRenderDrawColor(engine.Renderer, 0, 0, 0, 255);
         SDL_RenderFillRect(engine.Renderer, &strengthBackground);
-        SDL_SetRenderDrawColor(engine.Renderer, 255, 233, 0, 255);
+        if (strength > maxStrength * 0.6f)
+        {
+            SDL_SetRenderDrawColor(engine.Renderer, 0, 255, 209, 255);
+        }
+        else if (strength > maxStrength * 0.3f)
+        {
+            SDL_SetRenderDrawColor(engine.Renderer, 255, 255, 0, 255);
+        }
+        else
+        {
+            SDL_SetRenderDrawColor(engine.Renderer, 255, 30, 30, 255);
+        }
         SDL_RenderFillRect(engine.Renderer, &strengthBar);
     }
     
